@@ -3,7 +3,8 @@ name: Build SkyBest Android APK
 on:
 workflow_dispatch:
 push:
-branches: [main]
+branches:
+- main
 
 permissions:
 contents: read
@@ -19,7 +20,6 @@ uses: actions/checkout@v4
     uses: actions/setup-node@v4
     with:
       node-version: 20
-      cache: npm
 
   - name: Set up Java
     uses: actions/setup-java@v4
