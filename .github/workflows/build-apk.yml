@@ -41,7 +41,9 @@ jobs:
           npx cap config
 
       - name: Add Android platform
-        run: npx cap add android --config capacitor.config.json
+        run: |
+          node -e "console.log(JSON.stringify(require('./capacitor.config.json'), null, 2))"
+          npx cap add android
 
       - name: Sync web app
         run: npx cap sync android
