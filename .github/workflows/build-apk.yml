@@ -34,7 +34,7 @@ jobs:
         run: npm run build
 
       - name: Add Android platform
-        run: npx cap add android
+        run: npx cap add android --json
 
       - name: Sync web app
         run: npx cap sync android
