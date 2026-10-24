@@ -1,0 +1,720 @@
+/* ==========================================================================
+   Nova VPN - demo prototype styles
+   Mobile-first: designed for a phone screen first, then centered into a
+   phone-like frame on desktop so it still looks right when reviewed on a
+   laptop.
+   Order of this file:
+     1. Design tokens (colors, spacing)
+     2. Reset / base
+     3. App shell + bottom navigation
+     4. Shared components (cards, rows, pills, toggles, badges)
+     5. Home screen (status card + connect button)
+     6. Server screen
+     7. Settings / Account / Privacy screens
+     8. Animations
+     9. Larger screens
+   ========================================================================== */
+
+/* ---------- 1. Design tokens ---------- */
+:root {
+  /* Dark blue palette */
+  --bg-0: #050a1a;          /* page background */
+  --bg-1: #0a1229;          /* app background */
+  --surface: #101a36;       /* cards */
+  --surface-2: #16224a;     /* raised rows */
+  --border: rgba(255, 255, 255, 0.07);
+  --border-strong: rgba(255, 255, 255, 0.14);
+
+  --text: #eaf0ff;
+  --text-dim: #93a2c7;
+  --text-faint: #64739c;
+
+  --accent: #4f7cff;        /* primary blue */
+  --accent-2: #2ea6ff;      /* secondary blue */
+  --green: #34d399;
+  --amber: #fbbf24;
+  --red: #fb7185;
+  --offline: #7b87ad;
+
+  --radius: 16px;
+  --radius-sm: 12px;
+  --nav-height: 64px;
+
+  --font: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, 'Helvetica Neue',
+    Arial, sans-serif;
+}
+
+/* ---------- 2. Reset / base ---------- */
+*,
+*::before,
+*::after {
+  box-sizing: border-box;
+}
+
+html,
+body {
+  margin: 0;
+  padding: 0;
+  height: 100%;
+}
+
+body {
+  font-family: var(--font);
+  color: var(--text);
+  background:
+    radial-gradient(1100px 600px at 50% -10%, #16295e 0%, transparent 60%),
+    linear-gradient(180deg, var(--bg-1) 0%, var(--bg-0) 100%);
+  background-attachment: fixed;
+  -webkit-font-smoothing: antialiased;
+  -webkit-tap-highlight-color: transparent;
+}
+
+button {
+  font-family: inherit;
+  color: inherit;
+  cursor: pointer;
+  /* Removes the ~300ms double-tap-zoom delay on mobile browsers. */
+  touch-action: manipulation;
+}
+
+h1, h2, h3, p, ul {
+  margin: 0;
+}
+
+ul {
+  padding: 0;
+  list-style: none;
+}
+
+/* ---------- 3. App shell + bottom navigation ---------- */
+.app {
+  display: flex;
+  flex-direction: column;
+  /* 100vh first as a fallback for older Android WebViews that do not
+     understand dvh; the second line wins where it is supported. */
+  height: 100vh;
+  height: 100dvh;
+  max-width: 440px;
+  margin: 0 auto;
+}
+
+.app__content {
+  flex: 1;
+  overflow-y: auto;
+  -webkit-overflow-scrolling: touch;
+}
+
+.screen {
+  display: flex;
+  flex-direction: column;
+  gap: 16px;
+  padding: 20px 18px 28px;
+  /* Keep content clear of notches / camera cut-outs in portrait. */
+  padding-top: max(20px, env(safe-area-inset-top));
+  animation: screen-in 0.25s ease both;
+}
+
+.screen__header {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 12px;
+  min-height: 34px;
+}
+
+.screen__title {
+  font-size: 1.5rem;
+  font-weight: 700;
+  letter-spacing: -0.02em;
+}
+
+.back-button {
+  display: inline-flex;
+  align-items: center;
+  gap: 4px;
+  background: none;
+  border: none;
+  color: var(--accent-2);
+  font-size: 1rem;
+  font-weight: 600;
+  padding: 6px 8px 6px 0;
+}
+
+.back-button:active {
+  opacity: 0.7;
+}
+
+/* Bottom tab bar */
+.bottom-nav {
+  display: grid;
+  grid-template-columns: repeat(4, 1fr);
+  height: var(--nav-height);
+  flex-shrink: 0;
+  padding-bottom: env(safe-area-inset-bottom, 0px);
+  background: rgba(8, 14, 33, 0.92);
+  backdrop-filter: blur(14px);
+  border-top: 1px solid var(--border);
+}
+
+.nav-item {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  gap: 3px;
+  background: none;
+  border: none;
+  color: var(--text-faint);
+  font-size: 0.68rem;
+  font-weight: 600;
+  letter-spacing: 0.02em;
+  transition: color 0.18s ease;
+  -webkit-user-select: none;
+  user-select: none;
+}
+
+.nav-item--active {
+  color: var(--accent-2);
+}
+
+.nav-item--active svg {
+  filter: drop-shadow(0 0 8px rgba(46, 166, 255, 0.55));
+}
+
+/* ---------- 4. Shared components ---------- */
+.section {
+  background: var(--surface);
+  border: 1px solid var(--border);
+  border-radius: var(--radius);
+  overflow: hidden;
+}
+
+.section__title {
+  padding: 14px 16px 4px;
+  font-size: 0.75rem;
+  font-weight: 700;
+  text-transform: uppercase;
+  letter-spacing: 0.09em;
+  color: var(--text-faint);
+}
+
+.section__body {
+  padding: 4px 0;
+}
+
+.section__note {
+  padding: 12px 16px;
+  font-size: 0.82rem;
+  line-height: 1.5;
+  color: var(--text-dim);
+}
+
+/* Generic list row */
+.row {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  width: 100%;
+  padding: 13px 16px;
+  background: none;
+  border: none;
+  text-align: left;
+}
+
+.row + .row {
+  border-top: 1px solid var(--border);
+}
+
+.row--button:active {
+  background: rgba(79, 124, 255, 0.1);
+}
+
+.row__main {
+  display: flex;
+  flex-direction: column;
+  gap: 2px;
+  flex: 1;
+  min-width: 0;
+}
+
+.row__title {
+  font-size: 0.95rem;
+  font-weight: 600;
+}
+
+.row__subtitle {
+  font-size: 0.78rem;
+  color: var(--text-dim);
+  line-height: 1.4;
+}
+
+.row__meta {
+  font-size: 0.85rem;
+  color: var(--text-dim);
+  flex-shrink: 0;
+}
+
+.row__flag {
+  font-size: 1.5rem;
+  line-height: 1;
+}
+
+/* Status pills */
+.pill {
+  display: inline-block;
+  padding: 3px 9px;
+  border-radius: 999px;
+  font-size: 0.68rem;
+  font-weight: 700;
+  letter-spacing: 0.03em;
+  text-transform: uppercase;
+}
+
+.pill--online {
+  color: var(--green);
+  background: rgba(52, 211, 153, 0.14);
+  border: 1px solid rgba(52, 211, 153, 0.35);
+}
+
+.pill--busy {
+  color: var(--amber);
+  background: rgba(251, 191, 36, 0.13);
+  border: 1px solid rgba(251, 191, 36, 0.35);
+}
+
+.pill--maintenance {
+  color: var(--offline);
+  background: rgba(123, 135, 173, 0.14);
+  border: 1px solid rgba(123, 135, 173, 0.35);
+}
+
+/* Demo badge */
+.demo-badge {
+  padding: 4px 10px;
+  border-radius: 999px;
+  font-size: 0.66rem;
+  font-weight: 800;
+  letter-spacing: 0.12em;
+  color: var(--amber);
+  background: rgba(251, 191, 36, 0.12);
+  border: 1px solid rgba(251, 191, 36, 0.45);
+}
+
+/* Toggle switch */
+.toggle {
+  position: relative;
+  width: 46px;
+  height: 27px;
+  flex-shrink: 0;
+  border-radius: 999px;
+  border: 1px solid var(--border-strong);
+  background: var(--surface-2);
+  transition: background 0.18s ease, border-color 0.18s ease;
+  -webkit-user-select: none;
+  user-select: none;
+}
+
+/* Invisible hit area: makes the switch easier to tap on a phone
+   without changing how it looks. */
+.toggle::after {
+  content: '';
+  position: absolute;
+  inset: -9px;
+}
+
+.toggle__knob {
+  position: absolute;
+  top: 2px;
+  left: 2px;
+  width: 21px;
+  height: 21px;
+  border-radius: 50%;
+  background: var(--text-dim);
+  transition: transform 0.18s ease, background 0.18s ease;
+}
+
+.toggle--on {
+  background: var(--accent);
+  border-color: var(--accent);
+}
+
+.toggle--on .toggle__knob {
+  transform: translateX(19px);
+  background: #fff;
+}
+
+/* Honest demo disclaimer shown on most screens */
+.demo-note {
+  padding: 13px 15px;
+  border-radius: var(--radius-sm);
+  background: rgba(251, 191, 36, 0.08);
+  border: 1px solid rgba(251, 191, 36, 0.3);
+  color: #e8d9a8;
+  font-size: 0.8rem;
+  line-height: 1.55;
+}
+
+.demo-note strong {
+  color: var(--amber);
+}
+
+/* ---------- 5. Home screen: status card + connect button ---------- */
+.status-card {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  text-align: center;
+  gap: 8px;
+  padding: 26px 20px 24px;
+  border-radius: var(--radius);
+  background:
+    radial-gradient(120% 140% at 50% 0%, rgba(79, 124, 255, 0.16) 0%, transparent 60%),
+    var(--surface);
+  border: 1px solid var(--border);
+}
+
+.status-card__indicator {
+  display: grid;
+  place-items: center;
+  width: 54px;
+  height: 54px;
+  border-radius: 50%;
+  background: var(--surface-2);
+  border: 1px solid var(--border-strong);
+}
+
+.status-card__dot {
+  width: 16px;
+  height: 16px;
+  border-radius: 50%;
+  background: var(--offline);
+  box-shadow: 0 0 0 4px rgba(123, 135, 173, 0.18);
+}
+
+.status-card--connecting .status-card__dot {
+  background: var(--amber);
+  box-shadow: 0 0 0 4px rgba(251, 191, 36, 0.2);
+  animation: dot-pulse 1s ease-in-out infinite;
+}
+
+.status-card--connected .status-card__dot {
+  background: var(--green);
+  box-shadow: 0 0 0 4px rgba(52, 211, 153, 0.2);
+}
+
+.status-card__title {
+  font-size: 1.4rem;
+  font-weight: 700;
+  letter-spacing: -0.01em;
+}
+
+.status-card--connecting .status-card__title { color: var(--amber); }
+.status-card--connected .status-card__title { color: var(--green); }
+
+.status-card__hint {
+  max-width: 30ch;
+  font-size: 0.84rem;
+  line-height: 1.5;
+  color: var(--text-dim);
+}
+
+.status-card__timer {
+  font-size: 1.9rem;
+  font-weight: 700;
+  font-variant-numeric: tabular-nums;
+  letter-spacing: 0.04em;
+  color: var(--text);
+}
+
+/* Small caption under the timer so it is never mistaken for real data. */
+.status-card__timer-label {
+  display: block;
+  margin-top: 2px;
+  font-size: 0.68rem;
+  font-weight: 600;
+  letter-spacing: 0.09em;
+  text-transform: uppercase;
+  color: var(--text-faint);
+}
+
+/* Big round connect button */
+.connect-wrap {
+  display: flex;
+  justify-content: center;
+  padding: 10px 0 4px;
+}
+
+.connect-button {
+  position: relative;
+  width: 196px;
+  height: 196px;
+  border-radius: 50%;
+  border: none;
+  background: none;
+  display: grid;
+  place-items: center;
+  -webkit-user-select: none;
+  user-select: none;
+  -webkit-touch-callout: none;
+}
+
+.connect-button__ring {
+  position: absolute;
+  inset: 0;
+  border-radius: 50%;
+  border: 2px solid rgba(79, 124, 255, 0.4);
+  transition: border-color 0.25s ease;
+}
+
+.connect-button__inner {
+  position: relative;
+  z-index: 1;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 8px;
+  width: 164px;
+  height: 164px;
+  border-radius: 50%;
+  justify-content: center;
+  color: #fff;
+  background: linear-gradient(160deg, var(--accent-2) 0%, var(--accent) 70%);
+  box-shadow:
+    0 12px 34px rgba(79, 124, 255, 0.38),
+    inset 0 1px 0 rgba(255, 255, 255, 0.28);
+  transition: transform 0.15s ease, background 0.25s ease, box-shadow 0.25s ease;
+}
+
+.connect-button:active .connect-button__inner {
+  transform: scale(0.96);
+}
+
+.connect-button__label {
+  font-size: 0.95rem;
+  font-weight: 700;
+  letter-spacing: 0.04em;
+  text-transform: uppercase;
+}
+
+/* Connecting: amber + spinning dashed ring */
+.connect-button--connecting .connect-button__ring {
+  border-color: transparent;
+  border-top-color: var(--amber);
+  border-right-color: rgba(251, 191, 36, 0.35);
+  animation: spin 0.9s linear infinite;
+}
+
+.connect-button--connecting .connect-button__inner {
+  background: linear-gradient(160deg, #b9860f 0%, #8a6208 100%);
+  box-shadow: 0 12px 34px rgba(251, 191, 36, 0.3);
+}
+
+/* Connected: green + breathing glow */
+.connect-button--connected .connect-button__ring {
+  border-color: rgba(52, 211, 153, 0.55);
+  animation: glow-ring 2.2s ease-in-out infinite;
+}
+
+.connect-button--connected .connect-button__inner {
+  background: linear-gradient(160deg, #10b981 0%, #059669 100%);
+  box-shadow: 0 12px 34px rgba(16, 185, 129, 0.4);
+}
+
+/* ---------- 6. Server screen ---------- */
+.server-list {
+  display: flex;
+  flex-direction: column;
+}
+
+.server-row {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  width: 100%;
+  padding: 13px 16px;
+  background: none;
+  border: none;
+  border-top: 1px solid var(--border);
+  text-align: left;
+  transition: background 0.15s ease;
+  -webkit-user-select: none;
+  user-select: none;
+}
+
+.server-list li:first-child .server-row {
+  border-top: none;
+}
+
+.server-row:active:not(:disabled) {
+  background: rgba(79, 124, 255, 0.1);
+}
+
+.server-row--selected {
+  background: rgba(79, 124, 255, 0.14);
+  box-shadow: inset 3px 0 0 var(--accent);
+}
+
+.server-row--offline {
+  opacity: 0.55;
+}
+
+.server-row__flag {
+  font-size: 1.55rem;
+  line-height: 1;
+}
+
+.server-row__main {
+  display: flex;
+  flex-direction: column;
+  gap: 2px;
+  flex: 1;
+  min-width: 0;
+}
+
+.server-row__country {
+  font-size: 0.95rem;
+  font-weight: 600;
+}
+
+.server-row__city {
+  font-size: 0.78rem;
+  color: var(--text-dim);
+}
+
+.server-row__status {
+  display: flex;
+  flex-direction: column;
+  align-items: flex-end;
+  gap: 4px;
+  flex-shrink: 0;
+}
+
+.server-row__ping {
+  font-size: 0.74rem;
+  color: var(--text-faint);
+  font-variant-numeric: tabular-nums;
+}
+
+.server-row__check {
+  color: var(--accent-2);
+  font-weight: 800;
+  font-size: 1rem;
+}
+
+/* ---------- 7. Settings / Account / Privacy ---------- */
+.profile {
+  display: flex;
+  align-items: center;
+  gap: 14px;
+  padding: 16px;
+}
+
+.profile__avatar {
+  display: grid;
+  place-items: center;
+  width: 54px;
+  height: 54px;
+  border-radius: 50%;
+  font-size: 1.35rem;
+  font-weight: 700;
+  color: #fff;
+  background: linear-gradient(160deg, var(--accent-2), var(--accent));
+}
+
+.profile__name {
+  font-size: 1.05rem;
+  font-weight: 700;
+}
+
+.profile__plan {
+  font-size: 0.8rem;
+  color: var(--text-dim);
+}
+
+.prose {
+  padding: 12px 16px;
+  font-size: 0.87rem;
+  line-height: 1.6;
+  color: var(--text-dim);
+}
+
+.prose + .prose {
+  padding-top: 0;
+}
+
+.prose strong {
+  color: var(--text);
+}
+
+.prose-list {
+  padding: 4px 16px 8px 34px;
+  list-style: disc;
+}
+
+.prose-list li {
+  font-size: 0.87rem;
+  line-height: 1.6;
+  color: var(--text-dim);
+  padding: 3px 0;
+}
+
+.prose-list li::marker {
+  color: var(--accent-2);
+}
+
+/* ---------- 8. Animations ---------- */
+@keyframes spin {
+  to { transform: rotate(360deg); }
+}
+
+@keyframes dot-pulse {
+  0%, 100% { transform: scale(1); opacity: 1; }
+  50% { transform: scale(1.25); opacity: 0.7; }
+}
+
+@keyframes glow-ring {
+  0%, 100% { transform: scale(1); box-shadow: 0 0 0 0 rgba(52, 211, 153, 0.35); }
+  50% { transform: scale(1.04); box-shadow: 0 0 0 14px rgba(52, 211, 153, 0); }
+}
+
+@keyframes screen-in {
+  from { opacity: 0; transform: translateY(6px); }
+  to { opacity: 1; transform: translateY(0); }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  * {
+    animation-duration: 0.01ms !important;
+    animation-iteration-count: 1 !important;
+    transition-duration: 0.01ms !important;
+  }
+}
+
+/* ---------- 9. Larger screens (phone frame on desktop) ---------- */
+@media (min-width: 480px) {
+  body {
+    padding: 24px 0;
+  }
+
+  .app {
+    height: calc(100vh - 48px);
+    height: calc(100dvh - 48px);
+    border: 1px solid var(--border-strong);
+    border-radius: 30px;
+    overflow: hidden;
+    box-shadow: 0 30px 80px rgba(0, 0, 0, 0.55);
+  }
+}
+
+/* Very small phones (e.g. 320px wide): shrink the big button a little. */
+@media (max-width: 350px) {
+  .connect-button {
+    width: 172px;
+    height: 172px;
+  }
+
+  .connect-button__inner {
+    width: 144px;
+    height: 144px;
+  }
+}
