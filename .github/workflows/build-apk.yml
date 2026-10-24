@@ -33,8 +33,15 @@ jobs:
       - name: Build web app
         run: npm run build
 
+      - name: Check Capacitor config
+        run: |
+          pwd
+          ls -la
+          cat capacitor.config.json
+          npx cap config
+
       - name: Add Android platform
-        run: npx cap add android --json
+        run: npx cap add android
 
       - name: Sync web app
         run: npx cap sync android
